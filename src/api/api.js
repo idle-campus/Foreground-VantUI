@@ -84,7 +84,7 @@ export const getCategory = params => get(CATEGORIES_URL, params);
 // export const getGoodsList = params => get(PRODUCT_URL + '/products', params);
 // export const getGoodsList = params => get(PRODUCT_URL + '/findByCategoryTwo/'+ params.sid, params);
 // export const getGoodsList = params => get(PRODUCT_URL + `/findByCategoryTwo/${params.ids}`, params);
-export const getGoodsList = params => get(PRODUCT_URL + '/findByCategoryTwo', params);
+export const getGoodsList = params => get(PRODUCT_URL + '/goods/goodsList', params);
 
 //获取闲置物品留言
 // export const getGoodsComment = params => get(PRODUCT_URL + '/reply/list/' + params.id, params.way);

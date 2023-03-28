@@ -11,7 +11,7 @@
       <van-tabbar-item name="home" @click="onClick(1)">综合</van-tabbar-item>
       <van-tabbar-item name="search" @click="onClick(2)">价格<span>{{ priceSort === 'asc' ? '降序' : '升序' }}</span>
       </van-tabbar-item>
-      <van-tabbar-item name="friends" @click="onClick(3)">新品</van-tabbar-item>
+      <van-tabbar-item name="recommends" @click="onClick(3)">推荐</van-tabbar-item>
     </van-tabbar>
     <!--    筛选条件end-->
     <!--    为空时显示-->
@@ -24,12 +24,18 @@
         <van-image
           height="160"
           fit="cover"
-          :src='img_url + value.image'/>
+          :src='img_url + value.photo'/>
         <div class="productName">
-          {{ value.storeName }}
+          {{ value.name }}
         </div>
-        <div class="productPrice">
-          ￥{{ value.price }}
+        <!-- <div class="productPrice">
+          ￥{{ value.sellPrice }}
+        </div> -->
+        <div class="price">
+            <!--            当前价格-->
+            <span class="newprice">￥{{ value.sellPrice }}</span>
+            <!--            历史价格-->
+            <span class="oldprice">￥{{ value.buyPrice }}</span>
         </div>
       </van-grid-item>
     </van-grid>
@@ -41,6 +47,7 @@
 </template>
 
 <script>
+import {Toast} from "vant";
 import TopTitle from "../../components/topTitle";
 import {getGoodsList, IMG_URL} from '../../api/api'
 
@@ -50,7 +57,7 @@ export default {
   data() {
     return {
       img_url: IMG_URL,
-      title: '商品列表',
+      title: '闲置列表',
       active: 'home',
       name: null,//参数名,用来添加新的参数
       val: null,//参数内容
@@ -60,6 +67,7 @@ export default {
       },
       limit: 10,
       listProds: [],//商品分类数据
+      listTotal:"",
       priceSort: 'asc'
     }
   },
@@ -92,6 +100,12 @@ export default {
         this.limit = 10
         // console.log(this.limit)
       }
+      if(this.limit-9 > this.listTotal){
+        Toast({
+          message: '闲置见底啦！！！',
+          position: 'bottom',
+        });
+      }
       /*将传来的参数进行同步*/
       this.name = name
       this.val = val
@@ -101,12 +115,16 @@ export default {
       map[name] = val //添加新的参数
       map['limit'] = this.limit //页大小
       this.getlist(map)
+
     },
     /*查询商品数据*/
     getlist(queryParam) {
       getGoodsList(queryParam).then(res => {
         console.log(res)
-        this.listProds = res.data.content
+        // this.listProds = res.data.content
+        this.listProds = res.data.records
+        this.listTotal = res.data.total
+        console.log(this.listTotal)
       })
     },
     /*判断点击的按钮*/
@@ -123,7 +141,7 @@ export default {
           this.move('priceOrder', 'asc')
         }
       } else if (id === 3) {
-        this.move('news', 1)
+        this.move('recommend', 1)
       }
       /*
       TODO 应该是图标的class
@@ -161,6 +179,27 @@ export default {
     margin: 5px auto;
     font-weight: bold;
   }
+
+
+  .price {
+    width: 88%;
+    line-height: 19.8px;
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  .newprice {
+    color: #ff8725;
+    font-size: large;
+    font-weight: bold;
+  }
+
+  .oldprice {
+    color: #c4c7d3;
+    font-size: 12px;
+    text-decoration: line-through;
+  }
+
 
 }
 </style>
