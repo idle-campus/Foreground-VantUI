@@ -12,17 +12,20 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+
       '/api': {              //设置拦截器  拦截器格式   斜杠+拦截器名字，名字可以自己定
         target: 'http://localhost:8282',     //代理的目标地址
+        // target: 'http://42.193.253.56:8282',     //代理的目标地址
         changeOrigin: true,              //是否设置同源，输入是的
         pathRewrite: {                   //路径重写
-          '/api': ''                     //选择忽略拦截器里面的单词
+            '/api': ''                     //选择忽略拦截器里面的单词
         }
-      }
+    }
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '0.0.0.0', // can be overwritten by process.env.HOST
+    // host: 'localhost', // can be overwritten by process.env.HOST
     // host: '192.168.2.114', // can be overwritten by process.env.HOST
     port: 8181, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,

@@ -42,7 +42,7 @@ axios.interceptors.response.use(response => {
     /*token失效*/
     console.log("返回的406", 'token失效,清理用户信息开始')
     //要等待执行完
-    window.localStorage.removeItem('token')
+    // window.localStorage.removeItem('token')
     window.localStorage.removeItem('user')
     router.replace({name: 'Login'}).catch(() => console.log('406路由跳转异常'))
     // 中断Promise链
@@ -92,6 +92,8 @@ export function get(url, params) {
     })
   });
 }
+
+
 
 /**
  * del方法，对应del请求

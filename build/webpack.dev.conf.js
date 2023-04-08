@@ -22,6 +22,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+    useLocalIp: true,
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [
@@ -83,7 +84,12 @@ module.exports = new Promise((resolve, reject) => {
       // Add FriendlyErrorsPlugin
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
         compilationSuccessInfo: {
-          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
+          // messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
+          messages: [
+            `Your application is running here: `,
+            `Local: http://localhost:${port}`,
+            `Network: http://${require('ip').address()}:${port}`,
+          ],
         },
         onErrors: config.dev.notifyOnErrors
         ? utils.createNotifierCallback()

@@ -20,7 +20,7 @@
     <!--    商品宫格-->
     <van-grid :border="false" :column-num="2" gutter="10">
       <van-grid-item v-for="value in listProds" :key="value.id"
-                     :to="{path:'/productDetails', query: { productId: value.id }}">
+                     :to="{path:'/productDetails', query: { goodsId: value.id }}">
         <van-image
           height="160"
           fit="cover"
@@ -42,12 +42,13 @@
     <!--    商品宫格end-->
     <!--    Divider 分割线-->
     <van-divider v-if="listProds.length > 9" @click="move(name,val)">点击加载更多</van-divider>
+    <van-divider v-if="listProds.length > 9" @click="movePageNum(name,val)">点击加载更多</van-divider>
+    <van-divider v-if="listProds.length > 9" @click="move(name,val)">闲置见底啦！</van-divider>
     <!--    Divider 分割线end-->
   </div>
 </template>
 
 <script>
-import {Toast} from "vant";
 import TopTitle from "../../components/topTitle";
 import {getGoodsList, IMG_URL} from '../../api/api'
 
@@ -68,7 +69,11 @@ export default {
       limit: 10,
       listProds: [],//商品分类数据
       listTotal:"",
-      priceSort: 'asc'
+      priceSort: 'asc',
+      total: 0,
+      pageNum: 1,
+      pageSize: 10,
+
     }
   },
   mounted() {
@@ -89,8 +94,14 @@ export default {
     this.getlist(this.queryParam) //获取数据
   },
   methods: {
+    movePageNum(){
+
+    },
+
+
+
+
     move(name, val) {
-      console.log('move')
       if (name == this.name) {
         this.limit += 10
       } else {
@@ -101,7 +112,7 @@ export default {
         // console.log(this.limit)
       }
       if(this.limit-9 > this.listTotal){
-        Toast({
+        this.$toast({
           message: '闲置见底啦！！！',
           position: 'bottom',
         });
@@ -120,11 +131,10 @@ export default {
     /*查询商品数据*/
     getlist(queryParam) {
       getGoodsList(queryParam).then(res => {
-        console.log(res)
+        // console.log(res)
         // this.listProds = res.data.content
         this.listProds = res.data.records
         this.listTotal = res.data.total
-        console.log(this.listTotal)
       })
     },
     /*判断点击的按钮*/
@@ -143,17 +153,7 @@ export default {
       } else if (id === 3) {
         this.move('recommend', 1)
       }
-      /*
-      TODO 应该是图标的class
-      else if (id == 4) {
-        if (this.salesSort == 'desc') {
-          this.salesSort = 'asc'
-          this.move('salesSort', 'desc')
-        } else {
-          this.salesSort = 'desc'
-          this.move('salesSort', 'asc')
-        }
-      }*/
+
     }
   }
 }

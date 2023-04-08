@@ -1,28 +1,17 @@
-<!--注册页-->
+<!--忘记密码页-->
 <template>
   <div>
     <div class="icon-back" @click="tologin">
       <van-icon size="25" name="arrow-left"/>
     </div>
     <div id="Register_title">
-      <p>注册</p>
+      <p>忘记密码</p>
     </div>
     <van-form @submit="onSubmit"
               @failed="noVerify">
-      <!--      TODO 上传头像功能未完成-->
-      <!-- <van-field name="uploader" label="上传头像" center>
-        <template #input>
-          <van-uploader v-model="uploader" :max-count="1" />
-        </template>
-      </van-field> -->
+
       <van-cell-group>
-        <van-field
-          v-model="nickname"
-          required
-          label="昵 称"
-          :rules="[{ required: true }]"
-          placeholder="请输入昵称"
-        />
+
         <van-field
           v-model="username"
           required
@@ -41,21 +30,12 @@
           ]"
         />
         <van-field
-          v-model="phone"
-          required
-          label="手机号"
-          placeholder="请输入手机号"
-          :rules="[{ required: true },
-          { validator: phoneValidator, message: '手机号码格式错误！'},
-          ]"
-        />
-        <van-field
           v-model="password"
           required
           type="password"
           label="密码"
           placeholder="请输入密码"
-          :rules="[{ required: true }, { validator: passwodValidator, message: '密码输入两次不一致！'}]"
+          :rules="[{ required: true }, { validator: passwodvalidator, message: '密码输入两次不一致！'}]"
         />
         <van-field
           v-model="newPassword"
@@ -63,7 +43,7 @@
           type="password"
           label="确认密码"
           placeholder="请再次输入密码"
-          :rules="[{ required: true }, { validator: passwodValidator, message: '密码输入两次不一致！'}]"
+          :rules="[{ required: true }, { validator: passwodvalidator, message: '密码输入两次不一致！'}]"
         />
         <van-field
           v-model="sms"
@@ -86,7 +66,7 @@
       </van-cell-group>
 
       <div style="margin: 16px">
-        <van-button round block type="info" native-type="submit" class="btn">注册</van-button>
+        <van-button round block type="info" native-type="submit">确定修改</van-button>
       </div>
     </van-form>
 
@@ -94,24 +74,21 @@
 </template>
 
 <script>
-import {register, sendEmailCode} from "../../api/api";
+import {forgotPwd, sendEmailCode} from "../../api/api";
 
 export default {
-  name: 'Register',
+  name: 'ForgotPwd',
   data() {
     return {
-      nickname: 'www',
-      username:'1234567890',
+      username:'1908010503',
       email:'934668306@qq.com',
-      phone: '18636569656',
       sms: '',
       password: '12345',
       newPassword: '12345',
-      uploader: [],
       isSms: true,
       isBut: true,
       time: 60 * 1000,
-      if_time: false,
+      if_time: false
     };
   },
   methods: {
@@ -123,7 +100,7 @@ export default {
       this.if_time = true //显示倒计时
       sendEmailCode({
         email: this.email,
-        type: 0,//注册
+        type: 1,//忘记密码
       }).then(res => {
         if (res.code === '200') {
           this.$toast.success('已发送！')
@@ -140,31 +117,13 @@ export default {
       //回退上一级
       this.$router.go(-1);
     },
-    phoneValidator(val) {
-      //手机号验证
-      return new Promise((resolve) => {
-        this.$toast.loading('验证中...');
-        setTimeout(() => {
-          this.$toast.clear();
-          let isphone = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/.test(val)
-          if (isphone) {
-            this.isBut = false
-            resolve(true);
-          } else {
-            this.isBut = true
-            resolve(false);
-          }
-        }, 1000);
-      });
-    },
+    //邮箱验证单
     emailValidator(val){
-
       return new Promise((resolve) => {
         this.$toast.loading('验证中...');
         setTimeout(() => {
           this.$toast.clear();
-          // let isemail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(val)
-          let isemail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(val)
+          let isemail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(val)
           if (isemail) {
             this.isBut = false
             resolve(true);
@@ -172,10 +131,10 @@ export default {
             this.isBut = true
             resolve(false);
           }
-        }, 1000);
+        }, 100);
       });
-
     },
+    //学号验证单
     usernamelValidator(val){
       return new Promise((resolve) => {
         this.$toast.loading('验证中...');
@@ -189,10 +148,10 @@ export default {
             this.isBut = true
             resolve(false);
           }
-        }, 1000);
+        }, 100);
       });
     },
-    passwodValidator() {
+    passwodvalidator() {
       //密码验证
       //表单验证
       return this.password === this.newPassword
@@ -200,26 +159,24 @@ export default {
     onSubmit() {
       //校验通过
       console.log('校验通过')
-      register({
-        'phone': this.phone,//手机号
+      forgotPwd({
         'code': this.sms,//验证码
         'password': this.password,
-        'nickname': this.nickname, //用户昵称
         'username': this.username,
         'email': this.email,
-        'type':0,
+        'type':1,
       }).then(res => {
         if (res.code === '200') {
           this.$toast.success(res.msg)
           this.$router.push('/Login')
-        } else{
-          this.$toast.fail(res.msg) //用户名已存在
+        } else {
+          this.$toast.fail(res.msg)
         }
       })
     },
     noVerify() {
       //校验失败
-      this.$toast.fail(`注册失败！\n 请完善信息`);
+      this.$toast.fail(`重置密码失败！\n 请完善信息`);
     }
 
   },
@@ -242,11 +199,6 @@ export default {
   display: inline-block;
   color: #fff;
   font-size: 12px;
-}
-.btn {
-  width: calc(100% - 100px);
-  margin: 20px auto;
-  border-radius: 12px;
 }
 </style>
 

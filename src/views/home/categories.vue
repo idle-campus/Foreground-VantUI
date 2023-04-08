@@ -11,7 +11,7 @@
       <van-col span="6">
         <van-sidebar v-model="activeKey">
           <van-sidebar-item
-            v-for="category in goodscategory"
+            v-for="category in goodsCategory"
             :key="category.id" :title="category.name"
             :src='img_url+category.icon'
             @click="tab_item(category.id)"
@@ -51,14 +51,14 @@ export default {
       title: '商品分类',
       activeKey: 0,
       img_url: IMG_URL,//图片主机地址
-      goodscategory: [],//分类数据
+      goodsCategory: [],//分类数据
       category_children: [],//二级分类数据
     }
   },
   methods: {
     //切换二级分类
     tab_item(id) {
-      let newCategory = this.goodscategory.filter(item => item.id === id)
+      let newCategory = this.goodsCategory.filter(item => item.id === id)
       // console.log(newCategory)
       this.category_children = newCategory[0].children
     },
@@ -75,7 +75,7 @@ export default {
   },
   mounted() {
     getCategory().then(res => {
-      this.goodscategory = res.data //初始化分类数据
+      this.goodsCategory = res.data //初始化分类数据
       this.tab_item(res.data[0].id)//初始化二级分类数据
     })
   }

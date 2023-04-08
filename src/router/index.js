@@ -5,21 +5,20 @@ import home from "../views/home/home";
 import mine from "../views/home/mine";
 import Login from "../views/login/Login";
 import Register from "../views/login/Register";
+import ForgotPwd from "../views/login/ForgotPwd";
 import search from "../views/search/search";
 import productDetails from "../views/goods/productDetails";
 import categories from "../views/home/categories";
 import productList from "../views/goods/productList";
-import shopCart from "../views/home/shopCart";
-import contactList from "../views/contactList/contactList";
-import operateContactList from "../views/contactList/operateContactList";
-import wallet from "../views/user/wallet";
 import rpwd from "../views/user/rpwd";
-import collect from "../views/user/collect";
-import orderType from "../views/order/orderType";
-import order from "../views/order/order";
-import creationOrder from "../views/order/creationOrder";
-import paySuccess from "../views/order/paySuccess";
+import changeEmail from "../views/user/changeEmail";
+import myGoods from "../views/user/myGoods";
+import Person from "../views/user/person";
+import editGoods from "../views/user/editGoods";
 import releaseGoods from "../views/release/releaseGoods";
+
+import find404 from "../views/sys/404";
+
 
 
 Vue.use(Router)
@@ -56,19 +55,21 @@ const router = new Router({
         }, {
           path: '/productList',
           name: 'productList',
+          meta: {
+            isToken: true,
+          },
           component: productList
         }, {
-          path: '/wallet',
-          name: 'wallet',
-          component: wallet
-        }, {
-          path: '/orderType',
-          name: 'orderType',
-          component: orderType
-        },{
           path: '/releaseGoods',
           name: 'releaseGoods',
+          meta: {
+            isToken: true,
+          },
           component: releaseGoods
+        }, {
+          path: '/myGoods',
+          name: 'myGoods',
+          component: myGoods
         }
       ]
     }, {
@@ -80,48 +81,49 @@ const router = new Router({
       name: 'Register',
       component: Register
     }, {
+      path: '/forgotPwd',
+      name: 'ForgotPwd',
+      component: ForgotPwd
+    }, {
       path: '/search',
       name: 'search',
       component: search
     }, {
-      path: '/shopCart',
-      name: 'shopCart',
-      component: shopCart
-    }, {
-      path: '/contactList',
-      name: 'contactList',
-      meta: {
-        isToken: true,
-      },
-      component: contactList
-    }, {
-      path: '/operateContactList',
-      name: 'operateContactList',
-      component: operateContactList
+      path: '/person',
+      name: 'person',
+      component: Person
     }, {
       path: '/rpwd',
       name: 'rpwd',
+      meta: {
+        isToken: true,
+      },
       component: rpwd
     }, {
-      path: '/collect',
-      name: 'collect',
-      component: collect
+      path: '/changeEmail',
+      name: 'changeEmail',
+      meta: {
+        isToken: true,
+      },
+      component: changeEmail
     }, {
-      path: '/order',
-      name: 'order',
-      component: order
-    }, {
-      path: '/creationOrder',
-      name: 'creationOrder',
-      component: creationOrder
-    }, {
-      path: '/paySuccess',
-      name: 'paySuccess',
-      component: paySuccess
-    },{
       path: '/productDetails',
       name: 'productDetails',
+      meta: {
+        isToken: true,
+      },
       component: productDetails
+    },{
+      path: '/editGoods',
+      name: 'editGoods',
+      meta: {
+        isToken: true,
+      },
+      component: editGoods
+    },{
+      path: '/404',
+      name: '404',
+      component: find404
     }
   ]
 })
@@ -129,12 +131,13 @@ const router = new Router({
 /*进入路由之前*/
 router.beforeEach((to, from, next) => {
   let loginInfo = window.localStorage.getItem('user')//用户信息
-  let token = window.localStorage.getItem('token')//用户token
+  let token = (localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}).token//用户token
   //console.log('islogin', islogin)
   /*判断是否需要token*/
   if (to.meta.isToken) {
     if (loginInfo == null && token == null) {
       console.log('没有token,被拦截')
+      // this.$toast('请登录！')
       return next("/login")
     } else {
       next()
@@ -147,6 +150,19 @@ router.beforeEach((to, from, next) => {
       next()
     }
   }
+
+  // 未找到路由的情况
+  if (!to.matched.length) {
+    const storeUser = localStorage.getItem("user")
+    if (storeUser) {
+      next("/404")
+    } else {
+      // 跳回登录页面
+      next("/login")
+    }
+  }
+
+
 })
 
 

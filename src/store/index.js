@@ -1,19 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from "@/router";
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store =  new Vuex.Store({
 
-  modules: {
+  mutations: {
     logout() {
       // 清空缓存
       localStorage.removeItem("user")
-      localStorage.removeItem("token")
-      router.push("/login")
-
-      // 重置路由
-      resetRouter()
+      router.push("/home")
   }
   }
 })
+
+
+export default store

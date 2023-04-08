@@ -30,14 +30,14 @@
     <!-- 商品列表-->
     <div id="shoplist" style="margin-top: 10px">
       <van-row class="shoptitle">
-        <van-col span="24">精品推荐：</van-col>
+        <van-tag mark type="primary" size="large">闲置推荐</van-tag>
       </van-row>
 
       <van-grid :column-num="2" clickable :border="false">
         <van-grid-item
           v-for="(val, index) in HotLists"
           :key="index"
-          :to="{ path: '/productDetails', query: { productId: val.id } }"
+          :to="{ path: '/productDetails', query: { goodsId: val.id } }"
         >
           <van-image width="10rem" height="10rem" fit="contain" :src="img_url + val.photo" />
           <van-row>
@@ -53,20 +53,26 @@
 
     <div id="shopnew" style="margin-top: 10px">
       <van-row class="shoptitle">
-        <van-col span="24">最新发布：</van-col>
+        <van-tag mark type="primary" size="large">最新发布</van-tag>
       </van-row>
 
       <van-card
         v-for="(val, index) in News"
         :key="index"
-        tag="New"
+
         :price="val.sellPrice"
         :desc="val.content"
         :title="val.name"
         :thumb="img_url + val.photo"
         :origin-price="val.buyPrice"
-        @click="goProDeta(val.id)"
-      />
+        @click="goProData(val.id)"
+      >
+      <template #tag>
+        <!-- <van-icon name="new" color="red" size="30"/><br> -->
+        <van-tag plain type="danger">New</van-tag>
+
+      </template>
+      </van-card>
     </div>
   </div>
 </template>
@@ -87,7 +93,7 @@ export default {
       banners: [], //轮播图信息
       img_url: IMG_URL, //图片主机地址
       menuss: [], //首页菜单
-      HotLists: [], //首页精品推荐
+      HotLists: [], //首页闲置推荐
       News: [], //首页最新发布
     }
   },
@@ -111,8 +117,8 @@ export default {
       this.$router.push('/search')
     },
 
-    goProDeta(id) {
-      this.$router.push({ path: '/productDetails', query: { productId: id } })
+    goProData(id) {
+      this.$router.push({ path: '/productDetails', query: { goodsId: id } })
     },
 
     init() {
@@ -133,7 +139,7 @@ export default {
         }
       })
 
-      //首页精品推荐
+      //首页闲置推荐
       getFindByHot().then(res => {
         if (res.code === '200') {
           this.HotLists = res.data
@@ -218,4 +224,7 @@ export default {
   font-size: 20px;
   text-align: center;
 }
+
+
+
 </style>

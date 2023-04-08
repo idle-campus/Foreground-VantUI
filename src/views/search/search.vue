@@ -22,7 +22,7 @@
     </div>
     <!--    搜索历史区域end-->
     <!--     热门搜索区域-->
-    <span class="title">
+    <!-- <span class="title">
       热门搜索
     </span>
     <div>
@@ -36,14 +36,14 @@
       >
         {{ value }}
       </van-tag>
-    </div>
+    </div> -->
     <!--     热门搜索区域end-->
   </div>
 </template>
 
 <script>
 import searchModule from "../../components/searchModule";
-import {getKeyword} from '../../api/api'
+// import {getKeyword} from '../../api/api'
 
 export default {
   name: "search",
@@ -52,7 +52,7 @@ export default {
     return {
       isShow_search_off: true,
       ishome: false,
-      Keywords: [],//热门搜索
+      // Keywords: [],//热门搜索
       oldKeywords: [],//搜索历史
     }
   },
@@ -75,13 +75,13 @@ export default {
     //获取历史搜索
     this.getOldKeywords()
     //获取热门搜索
-    getKeyword().then(res => {
-      if (res.status !== 200) {
-        this.$toast.fail('获取热门搜索数据失败')
-        return
-      }
-      this.Keywords = res.data
-    })
+    // getKeyword().then(res => {
+    //   if (res.status !== 200) {
+    //     this.$toast.fail('获取热门搜索数据失败')
+    //     return
+    //   }
+    //   this.Keywords = res.data
+    // })
   }
 }
 </script>

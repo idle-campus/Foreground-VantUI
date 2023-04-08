@@ -4,8 +4,10 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import Vant, {Lazyload,Tab,Tabs,Dialog,Icon,NavBar,Button,Form,Field } from 'vant';
+
+import Vant, {Lazyload,Tab,Tabs,Icon,NavBar,Button,Form,Field,Toast,Divider,Dialog} from 'vant';
 import 'vant/lib/index.css';
+
 import VueCropper from 'vue-cropper'
 
 /*解决路由跳转爆错的问题  解决Vue-Router升级导致的Uncaught(in promise) navigation guard问题*/
@@ -19,29 +21,13 @@ VueRouter.prototype.push = function push(location) {
 // 挂载路由模块
 Vue.use(VueRouter)
 /*解决路由跳转爆错的问题end*/
-
-//Vant
-//懒加载
-Vue.use(Lazyload);
 Vue.config.productionTip = false
-Vue.use(Vant);
-//标签页
-Vue.use(Tab);
-Vue.use(Tabs);
 //图片裁剪
 Vue.use(VueCropper);
-//弹出框
-Vue.use(Dialog);
-//图标
-Vue.use(Icon);
-//导航栏
-Vue.use(NavBar);
-//按钮
-Vue.use(Button);
-//表单
-Vue.use(Form);
-//输入框
-Vue.use(Field);
+//Vant
+Vue.use(Vant);
+
+
 
 
 /* eslint-disable no-new */

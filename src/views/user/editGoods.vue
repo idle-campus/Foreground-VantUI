@@ -1,8 +1,13 @@
 <template>
   <div>
-    <div id="releaseGoods_title">
-      <p>发布闲置</p>
-    </div>
+
+      <van-nav-bar
+      :title= this.title
+      left-text="返回"
+      left-arrow
+      @click-left="onClickLeft"
+    />
+
 
 
     <van-form @submit="onSubmit">
@@ -12,15 +17,14 @@
         <van-uploader
         :max-count="1"
         :after-read="afterRead"
-        v-model="uploader"
-        />
-        <!-- <van-image
+        >
+        <van-image
           fit="cover"
           height="6rem"
-          :src="img_url+photo"
+          :src="img_url+form.photo"
           width="6rem"
-        /> -->
-        <!-- </van-uploader> -->
+        />
+        </van-uploader>
       </template>
     </van-field>
     <!-- 上传闲置物品图片end -->
@@ -28,14 +32,14 @@
 
     <van-cell-group>
         <van-field
-          v-model="name"
+          v-model="form.name"
           required
           label="名称"
           :rules="[{ required: true }]"
           placeholder="请输入名称"
         />
         <van-field
-          v-model="buyPrice"
+          v-model="form.buyPrice"
           required
           label="原价"
           placeholder="请输入原价"
@@ -43,7 +47,7 @@
           { validator: priceValidator, message: '价格格式错误！最多两位小数'},]"
         />
         <van-field
-          v-model="sellPrice"
+          v-model="form.sellPrice"
           required
           label="售价"
           placeholder="请输入售价"
@@ -52,7 +56,7 @@
           ]"
         />
         <van-field
-          v-model="content"
+          v-model="form.content"
           required
           label="描述"
           placeholder="请输入描述"
@@ -62,7 +66,7 @@
           :rules="[{ required: true }]"
         />
         <van-field
-          v-model="address"
+          v-model="form.address"
           required
           label="交易地点"
           placeholder="请输入交易地点"
@@ -115,7 +119,7 @@
       </van-cell-group>
 
       <div style="margin: 16px">
-        <van-button round block type="info" native-type="submit" class="btn">发布</van-button>
+        <van-button round block type="info" native-type="submit" class="btn">更新发布</van-button>
       </div>
 
 
@@ -127,28 +131,21 @@
 
 
 <script >
-import {releaseGoods, getCategory, upGoodsPhoto, IMG_URL} from "../../api/api";
+import {findCategoryName, getCategory, upGoodsPhoto, IMG_URL,myGoodsEdit, myGoodsEditByIsViolation, } from "../../api/api";
 
 export default {
-  name:"releaseGoods",
+  name:"editGoods",
   data() {
     return {
+      title:"",
       img_url: IMG_URL,//图片主机地址
       showPicker: false,
       goodsCategory: [],//分类数据
       category_children: [],//二级分类数据
       activeKey: 0,
       categoryName:"",
-      goodsCategoryId:"",
-      name:"",
-      photo:"",
-      buyPrice:"",
-      sellPrice:"",
-      content:"",
-      address:"",
-      user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
       form: {},
-      uploader:[]
+      type: "",
     }
   },
 
@@ -162,7 +159,7 @@ export default {
     },
     goConfirm(id,name) {
       this.categoryName = name;
-      this.goodsCategoryId = id;
+      this.form.goodsCategoryId = id;
       this.showPicker = false;
     },
     goBack(){
@@ -188,32 +185,37 @@ export default {
     },
 
 
-    upGoodsPhoto(){
-
+    onClickLeft() {
+      this.$router.go(-1);
     },
 
     //发布
     onSubmit() {
-      //校验通过
-      console.log('校验通过')
-      releaseGoods({
-        'name': this.name,
-        // 'photo': this.photo,
-        'photo': this.uploader.url,
-        'buyPrice': this.buyPrice,
-        'sellPrice': this.sellPrice,
-        'content': this.content,
-        'address':this.address,
-        'goodsCategoryId': this.goodsCategoryId,
-        'studentId': this.user.id,
-      }).then(res => {
+     if(this.type === "1"){
+      myGoodsEdit(
+        this.form
+      ).then(res => {
         if (res.code === '200') {
           this.$toast.success(res.msg)
-          this.$router.push('/Home')
+          this.$router.push('/myGoods?type=1')
         } else{
           this.$toast.fail(res.msg)
         }
       })
+     }if(this.type === "3"){
+      myGoodsEditByIsViolation(
+        this.form
+      ).then(res => {
+        if (res.code === '200') {
+          this.$toast.success(res.msg)
+          this.$router.push('/myGoods?type=3')
+        } else{
+          this.$toast.fail(res.msg)
+        }
+      })
+     }
+
+
     },
     //上传闲置图片
     afterRead(file){
@@ -223,7 +225,7 @@ export default {
         if(res.code !== '200'){
         this.$toast.fail(res.msg)
       }
-        this.$set(this.uploader,"url",res.data)
+        this.form.photo = res.data
       })
     },
 
@@ -234,7 +236,17 @@ export default {
       this.goodsCategory = res.data //初始化分类数据
       this.tab_item(res.data[0].id)//初始化二级分类数据
     })
-  }
+    this.form = this.$route.query.val
+    this.title = this.$route.query.title
+    this.type = this.$route.query.type
+
+    findCategoryName(this.form.goodsCategoryId).then(res => {
+       this.categoryName = res.data //获取闲置名称
+
+    })
+  },
+
+
 
 
 }

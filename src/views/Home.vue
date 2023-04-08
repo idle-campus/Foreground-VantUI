@@ -28,9 +28,9 @@ export default {
         this.active = 0
       } else if (val.path === '/categories' || val.path === '/productList') {
         this.active = 1
-      } else if (val.path === '/ReleaseGoods') {
-
-      } else if (val.path === '/mine') {
+      } else if (val.path === '/releaseGoods') {
+        this.active = 2
+      } else if (val.path === '/mine' || val.path === '/myGoods') {
         this.active = 3
       } else {
         this.active = 0
