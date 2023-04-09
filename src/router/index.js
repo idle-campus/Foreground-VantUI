@@ -16,10 +16,7 @@ import myGoods from "../views/user/myGoods";
 import Person from "../views/user/person";
 import editGoods from "../views/user/editGoods";
 import releaseGoods from "../views/release/releaseGoods";
-
 import find404 from "../views/sys/404";
-
-
 
 Vue.use(Router)
 
@@ -40,7 +37,10 @@ const router = new Router({
         {
           path: '/home',
           name: 'home',
-          component: home
+          component: home,
+          meta: {
+            keepAlive: true
+          }
         }, {
           path: '/mine',
           name: 'mine',
@@ -113,14 +113,14 @@ const router = new Router({
         isToken: true,
       },
       component: productDetails
-    },{
+    }, {
       path: '/editGoods',
       name: 'editGoods',
       meta: {
         isToken: true,
       },
       component: editGoods
-    },{
+    }, {
       path: '/404',
       name: '404',
       component: find404
@@ -161,9 +161,6 @@ router.beforeEach((to, from, next) => {
       next("/login")
     }
   }
-
-
 })
-
 
 export default router
