@@ -17,27 +17,22 @@
     </van-sticky>
     <!-- 顶部标题 end -->
     <!-- 顶部标题 end -->
-    <van-tabs v-model="activetab">
+    <van-tabs v-model="activeTab">
       <van-tab title="我发布的" name="1">
-        <div v-if="activetab === '1'"></div>
+        <div v-if="activeTab === '1'"></div>
       </van-tab>
       <van-tab title="我卖出的" name="2">
-        <div v-if="activetab === '2'"></div>
+        <div v-if="activeTab === '2'"></div>
       </van-tab>
       <van-tab title="审核不通过" name="3">
-        <div v-if="activetab === '3'"></div>
+        <div v-if="activeTab === '3'"></div>
       </van-tab>
       <van-tab title="已下架" name="0">
-        <div v-if="activetab === '0'"></div>
+        <div v-if="activeTab === '0'"></div>
       </van-tab>
     </van-tabs>
 
     <van-cell-group v-for="val in goodsList" :key="val.id" id="listbox">
-      <!--
-      val.createTime 订单创建时间
-      val.statusDto.title 发货状态
-      -->
-      <!-- <van-cell :border="false" :title="val.createTime" size="large" /> -->
       <van-cell size="large">
         <template #default>
           <!-- 商品卡片 -->
@@ -136,6 +131,30 @@
         </template>
       </van-cell>
     </van-cell-group>
+
+    <div></div>
+    <van-divider
+      v-if="this.goodsList.length > 9 && this.goodsList.length < this.listTotal"
+      @click="goodsMore()"
+    >
+      点击加载更多
+    </van-divider>
+    <van-divider
+      v-if="this.goodsList.length === this.listTotal && goodsList.length > 0"
+      @click="noMore()"
+    >
+      我的闲置见底啦！！！
+    </van-divider>
+    <!-- <van-divider
+        v-if="listProds.length > 9 && this.limit < this.listTotal"
+        @click="move(name, val)"
+        >点击加载更多
+      </van-divider>
+      <van-divider
+        v-if="this.limit > this.listTotal && listProds.length > 1"
+        @click="noMove()"
+        >闲置见底啦！！！
+      </van-divider> -->
   </div>
 </template>
 
@@ -149,24 +168,21 @@ import {
   myGoodsDown,
   myGoodsAgainUp
 } from '../../api/api'
-// import myGoodsList from "./myGoodsList";
 
 export default {
   name: 'myGoods',
-  // components: {OrderTypeList, TopTitle},
-  // components: {myGoodsList, TopTitle},
   components: { TopTitle },
   data() {
     return {
       img_url: IMG_URL,
       title: '我的闲置',
       ificon: false,
-      activetab: '-1', // 被选中的标签
-      numValue: '1',
+      activeTab: '-1', // 被选中的标签
+      queryParam: {},
       goodsList: [], // 闲置数据
-      // 分页
-      limit: 10, // 页大小,默认为 10
-      page: 1 // 页码,默认为1
+      listTotal: 0,
+      pageNum: 1,
+      pageSize: 10
     }
   },
   filters: {
@@ -177,29 +193,72 @@ export default {
     }
   },
   watch: {
-    activetab(newVal, oldCal) {
-      this.getList(newVal)
+    activeTab(newVal, oldCal) {
+      // console.log('activeTab(newVal)===' + newVal)
+      // console.log('activeTab(oldCal)===' + oldCal)
+      if (newVal === oldCal) {
+        console.log('activeTab(newVal)===' + newVal)
+        this.move(this.activeTab)
+      }
+      this.activeTab = newVal
+      this.move(this.activeTab)
     }
   },
 
   created() {
-    this.getList()
+    // this.getList()
+    // this.getList(this.activeTab)
   },
 
   methods: {
-    getList(id) {
-      getMyGoodsList({
-        type: id,
-        limit: 10, //页大小,默认为 10
-        page: 1 //页码,默认为1
-      }).then((res) => {
-        // this.goodsList = res.data.records
-        this.goodsList = res.data
+    noMore() {
+      this.$toast({
+        message: '我的闲置见底啦！！\n不要再点击了哦~',
+        position: 'bottom'
       })
     },
-    updateWeb() {
-      this.$router.push('/myGoods?type=1')
+
+    move(type) {
+      //初始化
+      this.goodsList = []
+      this.listTotal = 0
+      this.pageNum = 1
+      let map = {}
+      Object.assign(map, this.queryParam) //复制查询参数
+      map['type'] = type
+      map['pageNum'] = this.pageNum //页大小
+      map['pageSize'] = this.pageSize //每页数量
+      this.getList(map)
     },
+
+    goodsMore() {
+      this.pageNum += 1
+      let map = {}
+      Object.assign(map, this.queryParam) //复制查询参数
+      map['type'] = this.activeTab
+      map['pageNum'] = this.pageNum //页大小
+      map['pageSize'] = this.pageSize //每页数量
+      this.getList(map)
+    },
+
+    getList(queryParam) {
+      getMyGoodsList(queryParam).then((res) => {
+        this.goodsList = this.goodsList.concat(res.data.records)
+        this.listTotal = res.data.total
+      })
+    },
+
+    // getList(id) {
+    //   getMyGoodsList({
+    //     type: id,
+    //     pageNum: this.pageNum,
+    //     // pageSize: this.pageSize
+    //     pageSize: 2
+    //   }).then((res) => {
+    //     this.goodsList = this.goodsList.concat(res.data.records)
+    //     this.listTotal = res.data.total
+    //   })
+    // },
 
     Sold(id) {
       myGoodsSold(id).then((res) => {
@@ -207,7 +266,8 @@ export default {
           this.$toast.fail(res.msg)
         }
         this.$toast.success(res.msg)
-        this.getList(this.activetab)
+        // this.getList(this.activeTab)
+        this.move(this.activeTab)
       })
     },
 
@@ -217,7 +277,7 @@ export default {
           this.$toast.fail(res.msg)
         }
         this.$toast.success(res.msg)
-        this.getList(this.activetab)
+        this.move(this.activeTab)
       })
     },
 
@@ -227,7 +287,7 @@ export default {
           this.$toast.fail(res.msg)
         }
         this.$toast.success(res.msg)
-        this.getList(this.activetab)
+        this.move(this.activeTab)
       })
     },
 
@@ -237,7 +297,8 @@ export default {
           this.$toast.fail(res.msg)
         }
         this.$toast.success(res.msg)
-        this.getList(this.activetab)
+        // this.getList(this.activeTab)
+        this.move(this.activeTab)
       })
     },
 
@@ -261,9 +322,10 @@ export default {
       this.$router.push('/mine')
     }
   },
+
   mounted() {
-    let id = this.$route.query.type
-    this.activetab = id
+    this.activeTab = this.$route.query.type
+    this.type = this.activeTab
   }
 }
 </script>

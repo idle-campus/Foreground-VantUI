@@ -4,14 +4,15 @@ import router from "@/router";
 
 Vue.use(Vuex)
 
-const store =  new Vuex.Store({
+const store = new Vuex.Store({
 
   mutations: {
     logout() {
       // 清空缓存
       localStorage.removeItem("user")
+      localStorage.removeItem("goodsCategory")
       router.push("/home")
-  }
+    }
   }
 })
 

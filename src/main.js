@@ -4,8 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+// import './assets/button.css'
 
-import Vant, {Lazyload,Tab,Tabs,Icon,NavBar,Button,Form,Field,Toast,Divider,Dialog} from 'vant';
+import Vant, { Lazyload, Tab, Tabs, Icon, NavBar, Button, Form, Field, Toast, Divider, Dialog } from 'vant';
 import 'vant/lib/index.css';
 
 import VueCropper from 'vue-cropper'
@@ -35,6 +36,6 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: {App},
+  components: { App },
   template: '<App/>'
 })

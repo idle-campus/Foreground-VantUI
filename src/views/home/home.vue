@@ -16,16 +16,16 @@
     </div>
 
     <!-- 功能图标-->
-    <van-grid square clickable :border="false" style="margin-top: 9px">
+    <!-- <van-grid square clickable :border="false" style="margin-top: 9px">
       <van-grid-item
         v-for="(menus, index) in menuss"
         :key="index"
         :icon="img_url + menus.pic"
         :text="menus.name"
         :to="menus.url"
-        @click="goMenus(menus.url)"
+        @click="goMenus(menus.value, menus.url)"
       />
-    </van-grid>
+    </van-grid> -->
 
     <!-- 商品列表-->
     <div id="shoplist" style="margin-top: 10px">
@@ -39,7 +39,12 @@
           :key="index"
           :to="{ path: '/productDetails', query: { goodsId: val.id } }"
         >
-          <van-image width="10rem" height="10rem" fit="contain" :src="img_url + val.photo" />
+          <van-image
+            width="10rem"
+            height="10rem"
+            fit="contain"
+            :src="img_url + val.photo"
+          />
           <van-row>
             <van-col span="24" class="shopname">{{ val.name }}</van-col>
           </van-row>
@@ -59,7 +64,6 @@
       <van-card
         v-for="(val, index) in News"
         :key="index"
-
         :price="val.sellPrice"
         :desc="val.content"
         :title="val.name"
@@ -67,11 +71,10 @@
         :origin-price="val.buyPrice"
         @click="goProData(val.id)"
       >
-      <template #tag>
-        <!-- <van-icon name="new" color="red" size="30"/><br> -->
-        <van-tag plain type="danger">New</van-tag>
-
-      </template>
+        <template #tag>
+          <!-- <van-icon name="new" color="red" size="30"/><br> -->
+          <van-tag plain type="danger">New</van-tag>
+        </template>
       </van-card>
     </div>
   </div>
@@ -80,7 +83,13 @@
 <script>
 import { Toast } from 'vant'
 import searchModule from '../../components/searchModule'
-import { getBanner, getFindByHot, getFindByNew, getMenus, IMG_URL } from '../../api/api'
+import {
+  getBanner,
+  getFindByHot,
+  getFindByNew,
+  getMenus,
+  IMG_URL
+} from '../../api/api'
 
 export default {
   name: 'home',
@@ -94,15 +103,23 @@ export default {
       img_url: IMG_URL, //图片主机地址
       menuss: [], //首页菜单
       HotLists: [], //首页闲置推荐
-      News: [], //首页最新发布
+      News: [] //首页最新发布
     }
   },
 
   methods: {
-    goMenus(val) {
-      if (val === '/') {
-        this.$toast.fail('页面未开发')
-      }
+    goMenus(val, url) {
+      // if (val === '/') {
+      //   this.$toast.fail('页面未开发')
+      // }
+      // console.log(val)
+      // console.log(url)
+      let jsonStr = {}
+      jsonStr = eval(`(` + val + `)`)
+      console.log('jsonStr' + jsonStr)
+      console.log('jsonStr.path===' + jsonStr.path)
+      // this.$router.push({ path: url, query: { val } })
+      this.$router.push({ path: jsonStr.path })
     },
 
     onSearch(val) {
@@ -122,7 +139,7 @@ export default {
     },
 
     init() {
-      getBanner().then(res => {
+      getBanner().then((res) => {
         if (res.code === '200') {
           this.banners = res.data
         } else {
@@ -131,7 +148,7 @@ export default {
       })
 
       //首页菜单图标
-      getMenus().then(res => {
+      getMenus().then((res) => {
         if (res.code === '200') {
           this.menuss = res.data
         } else {
@@ -140,7 +157,7 @@ export default {
       })
 
       //首页闲置推荐
-      getFindByHot().then(res => {
+      getFindByHot().then((res) => {
         if (res.code === '200') {
           this.HotLists = res.data
           console.log(this.HotLists)
@@ -150,18 +167,18 @@ export default {
       })
 
       //首页最新发布
-      getFindByNew().then(res => {
+      getFindByNew().then((res) => {
         if (res.code === '200') {
           this.News = res.data
         } else {
           this.$toast.fail('获取首页最新发布失败')
         }
       })
-    },
+    }
   },
   mounted() {
     this.init()
-  },
+  }
 }
 </script>
 
@@ -224,7 +241,4 @@ export default {
   font-size: 20px;
   text-align: center;
 }
-
-
-
 </style>

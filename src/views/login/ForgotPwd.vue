@@ -2,31 +2,31 @@
 <template>
   <div>
     <div class="icon-back" @click="tologin">
-      <van-icon size="25" name="arrow-left"/>
+      <van-icon size="25" name="arrow-left" />
     </div>
     <div id="Register_title">
       <p>忘记密码</p>
     </div>
-    <van-form @submit="onSubmit"
-              @failed="noVerify">
-
+    <van-form @submit="onSubmit" @failed="noVerify">
       <van-cell-group>
-
         <van-field
           v-model="username"
           required
           label="学 号"
           placeholder="请输入10位数学号"
-          :rules="[{ required: true },
-          { validator: usernamelValidator, message: '学号码格式错误！'},]"
+          :rules="[
+            { required: true },
+            { validator: usernamelValidator, message: '学号码格式错误！' }
+          ]"
         />
         <van-field
           v-model="email"
           required
           label="邮 箱"
           placeholder="请输入邮箱"
-          :rules="[{ required: true },
-          { validator: emailValidator, message: '邮箱码格式错误！'},
+          :rules="[
+            { required: true },
+            { validator: emailValidator, message: '邮箱码格式错误！' }
           ]"
         />
         <van-field
@@ -35,7 +35,13 @@
           type="password"
           label="密码"
           placeholder="请输入密码"
-          :rules="[{ required: true }, { validator: passwodvalidator, message: '密码输入两次不一致！'}]"
+          :rules="[
+            { required: true },
+            {
+              validator: passLevelValidator,
+              message: '必须包含字母、数字(特殊字符可选) 长度6-12'
+            }
+          ]"
         />
         <van-field
           v-model="newPassword"
@@ -43,7 +49,10 @@
           type="password"
           label="确认密码"
           placeholder="请再次输入密码"
-          :rules="[{ required: true }, { validator: passwodvalidator, message: '密码输入两次不一致！'}]"
+          :rules="[
+            { required: true },
+            { validator: passwodvalidator, message: '密码输入两次不一致！' }
+          ]"
         />
         <van-field
           v-model="sms"
@@ -56,32 +65,45 @@
           :rules="[{ required: true }]"
         >
           <template #button>
-            <van-button size="small" native-type="button" :disabled="isBut" type="primary" @click="sendsms">
+            <van-button
+              size="small"
+              native-type="button"
+              :disabled="isBut"
+              type="primary"
+              @click="sendsms"
+            >
               发送验证码
               <!--              倒计时-->
-              <van-count-down id="down_time" :time="time" format="ss" v-if="if_time" @finish="time_stop"/>
+              <van-count-down
+                id="down_time"
+                :time="time"
+                format="ss"
+                v-if="if_time"
+                @finish="time_stop"
+              />
             </van-button>
           </template>
         </van-field>
       </van-cell-group>
 
       <div style="margin: 16px">
-        <van-button round block type="info" native-type="submit">确定修改</van-button>
+        <van-button round block type="info" native-type="submit" class="btn"
+          >确定修改</van-button
+        >
       </div>
     </van-form>
-
   </div>
 </template>
 
 <script>
-import {forgotPwd, sendEmailCode} from "../../api/api";
+import { forgotPwd, sendEmailCode } from '../../api/api'
 
 export default {
   name: 'ForgotPwd',
   data() {
     return {
-      username:'1908010503',
-      email:'934668306@qq.com',
+      username: '1908010503',
+      email: '934668306@qq.com',
       sms: '',
       password: '12345',
       newPassword: '12345',
@@ -89,7 +111,7 @@ export default {
       isBut: true,
       time: 60 * 1000,
       if_time: false
-    };
+    }
   },
   methods: {
     sendsms() {
@@ -100,12 +122,12 @@ export default {
       this.if_time = true //显示倒计时
       sendEmailCode({
         email: this.email,
-        type: 1,//忘记密码
-      }).then(res => {
+        type: 1 //忘记密码
+      }).then((res) => {
         if (res.code === '200') {
           this.$toast.success('已发送！')
         } else {
-          this.$toast.fail(res.msg);
+          this.$toast.fail(res.msg)
         }
       })
     },
@@ -115,41 +137,61 @@ export default {
     },
     tologin() {
       //回退上一级
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     //邮箱验证单
-    emailValidator(val){
+    emailValidator(val) {
       return new Promise((resolve) => {
-        this.$toast.loading('验证中...');
+        this.$toast.loading('验证中...')
         setTimeout(() => {
-          this.$toast.clear();
-          let isemail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(val)
+          this.$toast.clear()
+          let isemail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(
+            val
+          )
           if (isemail) {
             this.isBut = false
-            resolve(true);
+            resolve(true)
           } else {
             this.isBut = true
-            resolve(false);
+            resolve(false)
           }
-        }, 100);
-      });
+        }, 1000)
+      })
     },
     //学号验证单
-    usernamelValidator(val){
+    usernamelValidator(val) {
       return new Promise((resolve) => {
-        this.$toast.loading('验证中...');
+        this.$toast.loading('验证中...')
         setTimeout(() => {
-          this.$toast.clear();
+          this.$toast.clear()
           let isusername = /^[1-3]\d{9,9}$/.test(val)
           if (isusername) {
             this.isBut = false
-            resolve(true);
+            resolve(true)
           } else {
             this.isBut = true
-            resolve(false);
+            resolve(false)
           }
-        }, 100);
-      });
+        }, 1000)
+      })
+    },
+    passLevelValidator(val) {
+      return new Promise((resolve) => {
+        this.$toast.loading('验证中...')
+        setTimeout(() => {
+          this.$toast.clear()
+          let isLevel = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{6,12}$/.test(
+            val
+          )
+          if (isLevel) {
+            this.isBut = false
+            resolve(true)
+          } else {
+            this.isBut = true
+            resolve(false)
+          }
+        }, 1000)
+      })
     },
     passwodvalidator() {
       //密码验证
@@ -160,12 +202,12 @@ export default {
       //校验通过
       console.log('校验通过')
       forgotPwd({
-        'code': this.sms,//验证码
-        'password': this.password,
-        'username': this.username,
-        'email': this.email,
-        'type':1,
-      }).then(res => {
+        code: this.sms, //验证码
+        password: this.password,
+        username: this.username,
+        email: this.email,
+        type: 1
+      }).then((res) => {
         if (res.code === '200') {
           this.$toast.success(res.msg)
           this.$router.push('/Login')
@@ -176,19 +218,17 @@ export default {
     },
     noVerify() {
       //校验失败
-      this.$toast.fail(`重置密码失败！\n 请完善信息`);
+      this.$toast.fail(`重置密码失败！\n 请完善信息`)
     }
-
-  },
-};
+  }
+}
 </script>
 
 <style lang="less" scoped>
-
 .icon-back {
   position: absolute;
   left: 2px;
-  top: 15px
+  top: 15px;
 }
 
 #Register_title {
@@ -200,5 +240,9 @@ export default {
   color: #fff;
   font-size: 12px;
 }
+.btn {
+  width: calc(100% - 100px);
+  margin: 20px auto;
+  border-radius: 12px;
+}
 </style>
-

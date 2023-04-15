@@ -5,13 +5,30 @@
     <searchModule :is-show="isShow_search_off" :ishome="ishome"></searchModule>
     <!--    搜索框组件end-->
     <!--    搜索历史区域-->
-    <span class="title">
-      搜索历史
-    </span>
+
+    <div style="margin-bottom: 40px;">
+      <span class="title" style="float: left;"> 搜索历史 </span>
+      <span
+        style="float: right; margin-top: 3px; color:#C0C4CC;"
+        @click="goClear()"
+        v-if="this.oldKeywords != null"
+      >
+        清除
+      </span>
+    </div>
+
     <div id="history">
+      <span
+        style="color:#C0C4CC; display:block; text-align: center;"
+        v-if="this.oldKeywords === null"
+      >
+        无历史记录
+      </span>
       <van-button
-        v-for="value in oldKeywords" :key="value"
-        type="primary" size="mini"
+        v-for="value in oldKeywords"
+        :key="value"
+        type="primary"
+        size="mini"
         round
         color="#eeeded"
         style="margin-left: 8px"
@@ -42,18 +59,18 @@
 </template>
 
 <script>
-import searchModule from "../../components/searchModule";
+import searchModule from '../../components/searchModule'
 // import {getKeyword} from '../../api/api'
 
 export default {
-  name: "search",
-  components: {searchModule},
+  name: 'search',
+  components: { searchModule },
   data() {
     return {
       isShow_search_off: true,
       ishome: false,
       // Keywords: [],//热门搜索
-      oldKeywords: [],//搜索历史
+      oldKeywords: [] //搜索历史
     }
   },
   methods: {
@@ -69,6 +86,11 @@ export default {
           keyword: val
         }
       })
+    },
+
+    goClear() {
+      localStorage.removeItem('oldKeywords')
+      this.getOldKeywords()
     }
   },
   mounted() {
@@ -102,6 +124,7 @@ export default {
   }
 
   #history {
+    margin-top: 30px;
     .van-button {
       padding: 10px;
     }

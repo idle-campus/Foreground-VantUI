@@ -1,11 +1,11 @@
 <template>
   <div>
     <div id="rview">
-      <router-view/>
+      <router-view />
     </div>
     <van-tabbar v-model="active" placeholder>
       <van-tabbar-item icon="home-o" to="/home">首页</van-tabbar-item>
-      <van-tabbar-item icon="apps-o" to="/categories">商品分类</van-tabbar-item>
+      <van-tabbar-item icon="apps-o" to="/categories">分类</van-tabbar-item>
       <van-tabbar-item icon="guide-o" to="/releaseGoods">发布</van-tabbar-item>
       <!-- <van-tabbar-item icon="shopping-cart-o" to="/shopCart">购物车</van-tabbar-item> -->
       <van-tabbar-item icon="manager-o" to="/mine">我的</van-tabbar-item>
@@ -15,11 +15,11 @@
 
 <script>
 export default {
-  name: "Home",
+  name: 'Home',
   data() {
     return {
-      active: 0,
-    };
+      active: 0
+    }
   },
   methods: {
     //判断底部导航条的激活状态
@@ -39,7 +39,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     console.log(to) //查看路由
-    next(vm => {
+    next((vm) => {
       vm.isActive(to)
     })
   },
@@ -51,6 +51,4 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>

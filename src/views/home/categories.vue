@@ -3,7 +3,7 @@
   <div id="categories">
     <!--    顶部标题-->
     <van-sticky>
-      <TopTitle :t_name="title"/>
+      <TopTitle :t_name="title" />
     </van-sticky>
     <!--    顶部标题end-->
     <van-row>
@@ -12,8 +12,9 @@
         <van-sidebar v-model="activeKey">
           <van-sidebar-item
             v-for="category in goodsCategory"
-            :key="category.id" :title="category.name"
-            :src='img_url+category.icon'
+            :key="category.id"
+            :title="category.name"
+            :src="img_url + category.icon"
             @click="tab_item(category.id)"
           />
         </van-sidebar>
@@ -22,12 +23,15 @@
       <!--      商品分类详情-->
       <van-col span="18">
         <van-grid square :column-num="3" clickable id="grid">
-          <van-grid-item v-for="children in category_children" :key="children.id">
+          <van-grid-item
+            v-for="children in category_children"
+            :key="children.id"
+          >
             <van-image
               width="4rem"
               height="4rem"
               fit="cover"
-              :src='img_url+children.icon'
+              :src="img_url + children.icon"
               @click="goSearch(children.id)"
             />
             <span>{{ children.name }}</span>
@@ -40,25 +44,25 @@
 </template>
 
 <script>
-import TopTitle from "../../components/topTitle";
-import {getCategory, IMG_URL} from '../../api/api'
+import TopTitle from '../../components/topTitle'
+import { getCategory, IMG_URL } from '../../api/api'
 
 export default {
-  name: "categories",
-  components: {TopTitle},
+  name: 'categories',
+  components: { TopTitle },
   data() {
     return {
-      title: '商品分类',
+      title: '闲置分类',
       activeKey: 0,
-      img_url: IMG_URL,//图片主机地址
-      goodsCategory: [],//分类数据
-      category_children: [],//二级分类数据
+      img_url: IMG_URL, //图片主机地址
+      goodsCategory: [], //分类数据
+      category_children: [] //二级分类数据
     }
   },
   methods: {
     //切换二级分类
     tab_item(id) {
-      let newCategory = this.goodsCategory.filter(item => item.id === id)
+      let newCategory = this.goodsCategory.filter((item) => item.id === id)
       // console.log(newCategory)
       this.category_children = newCategory[0].children
     },
@@ -74,10 +78,26 @@ export default {
     }
   },
   mounted() {
-    getCategory().then(res => {
-      this.goodsCategory = res.data //初始化分类数据
-      this.tab_item(res.data[0].id)//初始化二级分类数据
-    })
+    let key = ''
+    for (var one in localStorage) {
+      if (one === 'goodsCategory') {
+        key = one
+      }
+    }
+
+    if (key != '') {
+      let goodsCategory = localStorage.getItem('goodsCategory')
+        ? JSON.parse(localStorage.getItem('goodsCategory'))
+        : {}
+      this.goodsCategory = goodsCategory
+      this.tab_item(goodsCategory[0].id)
+    } else {
+      getCategory().then((res) => {
+        window.localStorage.setItem('goodsCategory', JSON.stringify(res.data))
+        this.goodsCategory = res.data //初始化分类数据
+        this.tab_item(res.data[0].id) //初始化二级分类数据
+      })
+    }
   }
 }
 </script>
@@ -87,16 +107,15 @@ export default {
   background-color: white;
 
   .van-sidebar-item--select {
-    color: #409EFF;
-
+    color: #409eff;
   }
 
   .van-sidebar-item {
     background-color: white;
   }
   .van-sidebar-item--select::before {
-    background-color: #409EFF;
-}
+    background-color: #409eff;
+  }
 
   #title {
     text-align: center;

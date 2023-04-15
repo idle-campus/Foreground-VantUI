@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       img_url: IMG_URL,
-      title: '闲置列表',
+      title: '闲置推荐',
       active: 'home',
       name: null, //参数名,用来添加新的参数
       val: null, //参数内容
@@ -93,10 +93,10 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.query.allGoods != null) {
-      console.log(this.$route.params.allGoods)
-      this.queryParam['allGoods'] = this.$route.query.allGoods
-    }
+    // if (this.$route.query.allGoods != null) {
+    //   console.log(this.$route.params.allGoods)
+    //   this.queryParam['allGoods'] = this.$route.query.allGoods
+    // }
     /*搜索栏进行搜索*/
     if (this.$route.query.keyword != null) {
       //搜索词

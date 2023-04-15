@@ -1,7 +1,7 @@
 /**
  * api接口统一管理
  */
-import {get, post, del} from './axios';
+import { get, post, del } from './axios';
 import axios from "axios";
 
 //图片主机地址
@@ -47,7 +47,7 @@ export const register = params => post(USER_REGISTER, params);
 //忘记密码
 export const forgotPwd = params => post(USER_LOGIN + '/forgotPassword', params);
 //发送验证码
-export const sendEmailCode = params => get(USER_SEND_EMAIL_CODE + `/${params.email}/${params.type}` , params)
+export const sendEmailCode = params => get(USER_SEND_EMAIL_CODE + `/${params.email}/${params.type}`, params)
 
 
 
@@ -79,7 +79,7 @@ export const getCommentNum = params => get(COMMENT_URL + '/CommentNum/' + params
 //获取闲置物品留言
 export const getGoodsComment = params => get(COMMENT_URL + '/details/' + params.goodsId);
 //留言、回复闲置物品
-export const savaComment = params => post(COMMENT_URL , params);
+export const savaComment = params => post(COMMENT_URL, params);
 //删除留言
 export const delComment = params => del(COMMENT_URL + `/del/${params}`, null);
 
@@ -140,78 +140,3 @@ export const findCategoryName = params => get(CATEGORIES_URL + `/${params}`, nul
 
 
 
-//获取联系人列表
-// export const getAddress = params => get(USER_ADDRESS_URL + '/list', params);
-
-// //新增或修改联系人列表
-// export const postEdit = params => post(USER_ADDRESS_URL + '/edit', params);
-
-// //删除联系人列表
-// export const postDelEdit = params => post(USER_ADDRESS_URL + '/del', params);
-
-// //获取城市列表
-// export const getCityList = params => get(USER_ADDRESS_URL + '/city_list', params);
-
-// //获取单个联系人
-// export const getAddressOne = params => get(USER_ADDRESS_URL + '/detail', params);
-// //获取商品评论统计
-// export const getGoodsCommentCount = params => get(PRODUCT_URL + '/reply/config/' + params.id, null);
-// //收藏商品
-// export const postCollectAdd = params => post(USER_COLLECT_URL + '/add', params);
-
-// //取消收藏商品
-// export const postCollectDel = params => post(USER_COLLECT_URL + '/del', params);//给商品详情页使用
-
-// //批量取消收藏商品,清除足迹
-// export const postCollectDels = params => post(USER_COLLECT_URL + `/dels/${params.ids}`, params);
-
-// //获取用户收藏商品
-// export const getCollectAll = params => get(USER_COLLECT_URL + '/user', params);
-
-// //用户添加商品到购物车
-// export const postCartAdd = params => post(USER_CART_URL + '/add', params);
-
-// //获取用户购物车
-// export const getCartList = params => get(USER_CART_URL + '/list', params);
-
-// //删除用户购物车商品
-// export const postCartDelList = params => post(USER_CART_URL + '/del', params);
-
-// //修改购物车商品数量
-// export const postUpCartNum = params => post(USER_CART_URL + '/num', params);
-
-// //确认订单
-// export const postOrderConfirm = params => post(USER_ORDER_URL + '/confirm', params);
-
-// //取消订单
-// export const postOrderCancel = params => post(USER_ORDER_URL + '/cancel', params);
-
-// //删除订单
-// export const postOrderDel = params => post(USER_ORDER_URL + '/del', params);
-
-// //支付订单
-// export const postOrderPay = params => post(USER_ORDER_URL + '/pay', params);
-
-// //提交订单，并支付
-// export const postOrderCreate = params => post(USER_ORDER_URL + `/create//${params.key}`, params);
-
-// //计算订单总价
-// export const postOrderComputed = params => post(USER_ORDER_URL + `/computed/${params.key}`, params);
-
-// //获取订单列表
-// export const getOrderList = params => get(USER_ORDER_URL + '/list', params);
-
-// //获取订单详情
-// export const getOrderDetail = params => get(USER_ORDER_URL + `/detail/${params.key}`, null);
-
-// //获取用户信息
-// export const getUserInfo = params => get(USER_URL + '/userInfo', params);
-
-// //获取用户钱包
-// export const getBalance = params => get(USER_URL + '/user/balance', params);
-
-// //获取充值方案
-// export const getRechargeIndex = params => get(USER_RECHARGE_URL + '/index', params);
-
-// //模拟充值
-// export const postRechargeTest = params => post(USER_RECHARGE_URL + '/test', params);

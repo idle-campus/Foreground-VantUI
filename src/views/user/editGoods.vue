@@ -77,56 +77,6 @@
           placeholder="选择闲置分类"
           @click="showPicker = true"
         />
-        <van-popup
-          v-model="showPicker"
-          round
-          position="bottom"
-          :style="{ height: '80%' }"
-        >
-          <div id="goBack_title">
-            <van-button
-              icon="arrow-left"
-              type="primary"
-              round
-              size="small"
-              color="#b4b4b4"
-              @click="goBack"
-            />
-          </div>
-          <van-row>
-            <!--      侧边导航条-->
-            <van-col span="6">
-              <van-sidebar v-model="activeKey">
-                <van-sidebar-item
-                  v-for="category in goodsCategory"
-                  :key="category.id"
-                  :title="category.name"
-                  @click="tab_item(category.id)"
-                />
-              </van-sidebar>
-            </van-col>
-            <!--      侧边导航条end-->
-            <!--      商品分类详情-->
-            <van-col span="18">
-              <van-grid square :column-num="3" clickable id="grid">
-                <van-grid-item
-                  v-for="children in category_children"
-                  :key="children.id"
-                >
-                  <van-image
-                    width="4rem"
-                    height="4rem"
-                    fit="cover"
-                    :src="img_url + children.icon"
-                    @click="goConfirm(children.id, children.name)"
-                  />
-                  <span>{{ children.name }}</span>
-                </van-grid-item>
-              </van-grid>
-            </van-col>
-            <!--      商品分类详情end-->
-          </van-row>
-        </van-popup>
       </van-cell-group>
 
       <div style="margin: 16px">
@@ -135,6 +85,57 @@
         </van-button>
       </div>
     </van-form>
+
+    <van-popup
+      v-model="showPicker"
+      round
+      position="bottom"
+      :style="{ height: '80%' }"
+    >
+      <div id="goBack_title">
+        <van-button
+          icon="arrow-left"
+          type="primary"
+          round
+          size="small"
+          color="#b4b4b4"
+          @click="goBacks()"
+        />
+      </div>
+      <van-row>
+        <!--      侧边导航条-->
+        <van-col span="6">
+          <van-sidebar v-model="activeKey">
+            <van-sidebar-item
+              v-for="category in goodsCategory"
+              :key="category.id"
+              :title="category.name"
+              @click="tab_item(category.id)"
+            />
+          </van-sidebar>
+        </van-col>
+        <!--      侧边导航条end-->
+        <!--      商品分类详情-->
+        <van-col span="18">
+          <van-grid square :column-num="3" clickable id="grid">
+            <van-grid-item
+              v-for="children in category_children"
+              :key="children.id"
+            >
+              <van-image
+                width="4rem"
+                height="4rem"
+                fit="cover"
+                :src="img_url + children.icon"
+                @click="goConfirm(children.id, children.name)"
+              />
+              <span>{{ children.name }}</span>
+            </van-grid-item>
+          </van-grid>
+        </van-col>
+        <!--      商品分类详情end-->
+      </van-row>
+    </van-popup>
   </div>
 </template>
 
@@ -176,7 +177,7 @@ export default {
       this.form.goodsCategoryId = id
       this.showPicker = false
     },
-    goBack() {
+    goBacks() {
       this.showPicker = false
     },
 
